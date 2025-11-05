@@ -163,6 +163,39 @@ export default function QrSettings({ onChange }) {
         </div>
       </label>
 
+    
+      <div>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+          รูปแบบจุด (Dot Style):
+        </label>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { value: "rounded", label: "Rounded", emoji: "⭕" },
+            { value: "dots", label: "Dots", emoji: "🔵" },
+            { value: "classy", label: "Classy", emoji: "💎" },
+            { value: "classy-rounded", label: "Classy", emoji: "✨" },
+            { value: "square", label: "Square", emoji: "⬜" },
+            { value: "extra-rounded", label: "Extra", emoji: "🔘" },
+          ].map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setDotStyle(option.value)}
+              className={`px-2 py-2 rounded-full text-xs font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-1 ${
+                dotStyle === option.value
+                  ? "bg-blue-600 text-white dark:bg-blue-500 shadow-sm"
+                  : "bg-white dark:bg-[#1a1a1a] text-gray-700 dark:text-gray-300 border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-[#262626]"
+              }`}
+              title={option.value}
+            >
+              <span>{option.emoji}</span>
+              <span>{option.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+
       <label className="inline-flex items-center justify-between cursor-pointer py-1">
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
           แสดงโลโก้ตรงกลาง
@@ -194,34 +227,6 @@ export default function QrSettings({ onChange }) {
         </div>
       )}
 
-      <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-          รูปแบบจุด (Dot Style):
-        </label>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { value: "rounded", label: "Rounded" },
-            { value: "dots", label: "Dots" },
-            { value: "classy", label: "Classy" },
-            { value: "classy-rounded", label: "Classy Rounded" },
-            { value: "square", label: "Square" },
-            { value: "extra-rounded", label: "Extra Rounded" },
-          ].map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => setDotStyle(option.value)}
-              className={`px-3 py-2 rounded-full text-sm font-medium transition-colors ${
-                dotStyle === option.value
-                  ? "bg-blue-600 text-white dark:bg-blue-500 shadow-sm"
-                  : "bg-white dark:bg-[#1a1a1a] text-gray-700 dark:text-gray-300 border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-[#262626]"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
 
       <div className="flex gap-2 pt-1">
         <button
