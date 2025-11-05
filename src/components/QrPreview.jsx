@@ -131,7 +131,7 @@ export default function QrPreview({ options }) {
       </div>
 
       <div className="w-full mt-6">
-        <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+        <div className="mb-2 text-base font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
           <span>⬇️ Export PNG</span>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -139,7 +139,7 @@ export default function QrPreview({ options }) {
             <button
               key={s}
               onClick={() => downloadQR(s)}
-              className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white py-2.5 rounded-xl text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md"
+              className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white py-2.5 rounded-xl text-base font-medium transition-colors duration-200 shadow-sm hover:shadow-md"
             >
               {s}×{s}
             </button>

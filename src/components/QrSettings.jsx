@@ -44,7 +44,7 @@ export default function QrSettings({ onChange }) {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
           <span>🔗</span>
           <span>URL / ข้อความ</span>
         </label>
@@ -52,14 +52,14 @@ export default function QrSettings({ onChange }) {
           type="text"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="w-full p-2.5 rounded-xl bg-white dark:bg-[#1a1a1a] border border-border-light dark:border-border-dark text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-sm"
+          className="w-full p-2.5 rounded-xl bg-white dark:bg-[#1a1a1a] border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-sm"
           placeholder="https://example.com"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="relative">
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
             <span>🎨</span>
             <span>สี QR</span>
           </label>
@@ -72,7 +72,7 @@ export default function QrSettings({ onChange }) {
             style={{ backgroundColor: color }}
           >
             <span
-              className="text-xs font-medium drop-shadow-md"
+              className="text-sm font-medium drop-shadow-md"
               style={{
                 color: getContrastColor(color),
               }}
@@ -99,7 +99,7 @@ export default function QrSettings({ onChange }) {
           )}
         </div>
         <div className="relative">
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
             <span>🖼️</span>
             <span>พื้นหลัง</span>
           </label>
@@ -118,7 +118,7 @@ export default function QrSettings({ onChange }) {
             style={{ backgroundColor: transparent ? undefined : bgColor }}
           >
             <span
-              className="text-xs font-medium drop-shadow-md"
+              className="text-sm font-medium drop-shadow-md"
               style={{
                 color: transparent
                   ? "#6b7280"
@@ -149,7 +149,7 @@ export default function QrSettings({ onChange }) {
       </div>
 
       <label className="inline-flex items-center justify-between cursor-pointer py-1">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-base font-medium text-gray-700 dark:text-gray-300">
           พื้นหลังโปร่งใส
         </span>
         <div className="relative inline-flex items-center">
@@ -165,7 +165,7 @@ export default function QrSettings({ onChange }) {
 
     
       <div>
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+        <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
           รูปแบบจุด (Dot Style):
         </label>
         <div className="grid grid-cols-3 gap-2">
@@ -181,7 +181,7 @@ export default function QrSettings({ onChange }) {
               key={option.value}
               type="button"
               onClick={() => setDotStyle(option.value)}
-              className={`px-2 py-2 rounded-full text-xs font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-1 ${
+              className={`px-2 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-1 ${
                 dotStyle === option.value
                   ? "bg-blue-600 text-white dark:bg-blue-500 shadow-sm"
                   : "bg-white dark:bg-[#1a1a1a] text-gray-700 dark:text-gray-300 border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-[#262626]"
@@ -197,7 +197,7 @@ export default function QrSettings({ onChange }) {
 
 
       <label className="inline-flex items-center justify-between cursor-pointer py-1">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-base font-medium text-gray-700 dark:text-gray-300">
           แสดงโลโก้ตรงกลาง
         </span>
         <div className="relative inline-flex items-center">
@@ -213,7 +213,7 @@ export default function QrSettings({ onChange }) {
 
       {showLogo && (
         <div>
-        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
           <span>🖍️</span>
           <span>โลโก้ (URL)</span>
         </label>
@@ -221,7 +221,7 @@ export default function QrSettings({ onChange }) {
             type="text"
             value={logo}
             onChange={(e) => setLogo(e.target.value)}
-          className="w-full p-2.5 rounded-xl bg-white dark:bg-[#1a1a1a] border border-border-light dark:border-border-dark text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-sm"
+          className="w-full p-2.5 rounded-xl bg-white dark:bg-[#1a1a1a] border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-sm"
             placeholder="https://..."
           />
         </div>
