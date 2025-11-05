@@ -1,4 +1,6 @@
 {
-    "buildCommand": "npm install rollup --save-dev && npm run build",
-    "outputDirectory": "dist"
-  }
+  "buildCommand": "npm install --include=optional --no-save @rollup/rollup-linux-x64-gnu@^4.52.5 && npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "installCommand": "npm install --include=optional --legacy-peer-deps"
+}
