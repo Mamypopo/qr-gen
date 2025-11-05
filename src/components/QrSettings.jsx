@@ -52,7 +52,7 @@ export default function QrSettings({ onChange }) {
           type="text"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="w-full p-2.5 rounded-xl bg-white dark:bg-[#1a1a1a] border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-sm"
+          className="w-full p-3 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-300/50 dark:focus:ring-purple-300/50 focus:border-pink-300/50 dark:focus:border-purple-300/50 transition-all shadow-sm"
           placeholder="https://example.com"
         />
       </div>
@@ -68,7 +68,7 @@ export default function QrSettings({ onChange }) {
               setShowColorPicker(!showColorPicker);
               setShowBgColorPicker(false);
             }}
-            className="w-full h-10 rounded-lg cursor-pointer border border-border-light dark:border-border-dark flex items-center justify-center transition hover:opacity-80 shadow-sm"
+            className="w-full h-12 rounded-2xl cursor-pointer border border-border-light dark:border-border-dark flex items-center justify-center transition-all hover:opacity-90 shadow-sm hover:shadow-md"
             style={{ backgroundColor: color }}
           >
             <span
@@ -110,7 +110,7 @@ export default function QrSettings({ onChange }) {
                 setShowColorPicker(false);
               }
             }}
-            className={`w-full h-10 rounded-lg border border-border-light dark:border-border-dark flex items-center justify-center transition ${
+            className={`w-full h-12 rounded-2xl border border-border-light dark:border-border-dark flex items-center justify-center transition-all ${
               transparent
                 ? "opacity-50 cursor-not-allowed bg-gray-200 dark:bg-gray-700"
                 : "cursor-pointer hover:opacity-80"
@@ -159,7 +159,7 @@ export default function QrSettings({ onChange }) {
             onChange={(e) => setTransparent(e.target.checked)}
             className="sr-only peer"
           />
-          <div className="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 dark:peer-checked:bg-blue-500"></div>
+          <div className="w-11 h-6 bg-gradient-to-r from-pink-200 to-purple-200 dark:from-pink-300/30 dark:to-purple-300/30 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-300/50 dark:peer-focus:ring-purple-300/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-pink-300/50 dark:after:border-purple-300/50 after:border-2 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-400 peer-checked:to-purple-400 dark:peer-checked:from-pink-500/50 dark:peer-checked:to-purple-500/50 shadow-inner"></div>
         </div>
       </label>
 
@@ -183,8 +183,8 @@ export default function QrSettings({ onChange }) {
               onClick={() => setDotStyle(option.value)}
               className={`px-2 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-1 ${
                 dotStyle === option.value
-                  ? "bg-blue-600 text-white dark:bg-blue-500 shadow-sm"
-                  : "bg-white dark:bg-[#1a1a1a] text-gray-700 dark:text-gray-300 border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-[#262626]"
+                  ? "bg-gradient-to-r from-pink-400 to-purple-400 dark:from-pink-500/60 dark:to-purple-500/60 text-white shadow-md"
+                  : "bg-surface-light dark:bg-surface-dark text-gray-700 dark:text-gray-300 border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-800/50"
               }`}
               title={option.value}
             >
@@ -207,7 +207,7 @@ export default function QrSettings({ onChange }) {
             onChange={(e) => setShowLogo(e.target.checked)}
             className="sr-only peer"
           />
-          <div className="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 dark:peer-checked:bg-blue-500"></div>
+          <div className="w-11 h-6 bg-gradient-to-r from-pink-200 to-purple-200 dark:from-pink-300/30 dark:to-purple-300/30 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-300/50 dark:peer-focus:ring-purple-300/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-pink-300/50 dark:after:border-purple-300/50 after:border-2 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-400 peer-checked:to-purple-400 dark:peer-checked:from-pink-500/50 dark:peer-checked:to-purple-500/50 shadow-inner"></div>
         </div>
       </label>
 
@@ -221,7 +221,7 @@ export default function QrSettings({ onChange }) {
             type="text"
             value={logo}
             onChange={(e) => setLogo(e.target.value)}
-          className="w-full p-2.5 rounded-xl bg-white dark:bg-[#1a1a1a] border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-sm"
+          className="w-full p-3 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-300/50 dark:focus:ring-purple-300/50 focus:border-pink-300/50 dark:focus:border-purple-300/50 transition-all shadow-sm"
             placeholder="https://..."
           />
         </div>
@@ -242,7 +242,7 @@ export default function QrSettings({ onChange }) {
             setShowColorPicker(false);
             setShowBgColorPicker(false);
           }}
-          className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100 py-2.5 rounded-xl transition-colors shadow-sm"
+          className="flex-1 bg-gradient-to-r from-orange-200 to-pink-200 dark:from-orange-300/40 dark:to-pink-300/40 hover:from-orange-300 hover:to-pink-300 dark:hover:from-orange-400/50 dark:hover:to-pink-400/50 text-gray-800 dark:text-gray-100 py-3 rounded-2xl transition-all shadow-md hover:shadow-lg border border-orange-300/50 dark:border-orange-400/30"
         >
           ↺ รีเซ็ตค่าเริ่มต้น
         </button>

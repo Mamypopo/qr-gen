@@ -34,18 +34,18 @@ export default function DarkModeToggle() {
       <span className="mr-2 text-sm text-gray-700 dark:text-gray-300 hidden sm:inline">
         {darkMode ? "Dark" : "Light"}
       </span>
-      <span className="relative w-12 h-7 bg-gray-200 dark:bg-gray-700 rounded-full transition-colors shadow-inner">
+      <span className="relative w-12 h-7 bg-gradient-to-r from-pink-200 to-purple-200 dark:from-pink-300/30 dark:to-purple-300/30 rounded-full transition-all shadow-inner">
         {/* sun icon */}
-        <span className="absolute left-1 top-1 w-5 h-5 flex items-center justify-center text-yellow-500 opacity-100 transition-opacity">
+        <span className="absolute left-1 top-1 w-5 h-5 flex items-center justify-center text-yellow-400 opacity-100 transition-opacity">
           ☀️
         </span>
         {/* moon icon */}
-        <span className="absolute right-1 top-1 w-5 h-5 flex items-center justify-center text-indigo-300 opacity-100 transition-opacity">
+        <span className="absolute right-1 top-1 w-5 h-5 flex items-center justify-center text-indigo-400 opacity-100 transition-opacity">
           🌙
         </span>
         {/* knob */}
         <span
-          className={`absolute top-0.5 h-6 w-6 bg-white dark:bg-surface-dark rounded-full border border-border-light dark:border-border-dark shadow transform transition-transform duration-200 ease-in-out ${
+          className={`absolute top-0.5 h-6 w-6 bg-white rounded-full border-2 border-pink-300/50 dark:border-purple-300/50 shadow-lg transform transition-transform duration-300 ease-in-out ${
             darkMode ? "translate-x-5" : "translate-x-0.5"
           }`}
         />
