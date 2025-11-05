@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "npm install --include=optional --no-save @rollup/rollup-linux-x64-gnu@^4.52.5 || true",
+    "prebuild": "node -e \"const os=require('os');const platform=os.platform();if(platform==='linux'){require('child_process').execSync('npm install --include=optional --no-save @rollup/rollup-linux-x64-gnu@^4.52.5',{stdio:'inherit'})}else if(platform==='darwin'){require('child_process').execSync('npm install --include=optional --no-save @rollup/rollup-darwin-x64@^4.52.5 @rollup/rollup-darwin-arm64@^4.52.5',{stdio:'inherit'})}else if(platform==='win32'){require('child_process').execSync('npm install --include=optional --no-save @rollup/rollup-win32-x64-msvc@^4.52.5',{stdio:'inherit'})}\" || true",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "postinstall": "npm install --include=optional --no-save @rollup/rollup-linux-x64-gnu@^4.52.5 || true"
+    "postinstall": "node -e \"const os=require('os');const platform=os.platform();if(platform==='linux'){require('child_process').execSync('npm install --include=optional --no-save @rollup/rollup-linux-x64-gnu@^4.52.5',{stdio:'inherit'})}else if(platform==='darwin'){require('child_process').execSync('npm install --include=optional --no-save @rollup/rollup-darwin-x64@^4.52.5 @rollup/rollup-darwin-arm64@^4.52.5',{stdio:'inherit'})}else if(platform==='win32'){require('child_process').execSync('npm install --include=optional --no-save @rollup/rollup-win32-x64-msvc@^4.52.5',{stdio:'inherit'})}\" || true"
   },
   "dependencies": {
     "clsx": "^2.1.1",
