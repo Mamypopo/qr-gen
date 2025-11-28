@@ -28,8 +28,23 @@ export default function QrSettings({ onChange }) {
   const [dotStyle, setDotStyle] = useState(DEFAULTS.dotStyle);
   const [showLogo, setShowLogo] = useState(true);
   const [logo, setLogo] = useState("");
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoDataUrl, setLogoDataUrl] = useState("");
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showBgColorPicker, setShowBgColorPicker] = useState(false);
+
+  // แปลงไฟล์เป็น data URL
+  useEffect(() => {
+    if (logoFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoDataUrl(reader.result);
+      };
+      reader.readAsDataURL(logoFile);
+    } else {
+      setLogoDataUrl("");
+    }
+  }, [logoFile]);
 
   // อัปเดต QR Code อัตโนมัติเมื่อมีการเปลี่ยนแปลง
   useEffect(() => {
@@ -37,9 +52,9 @@ export default function QrSettings({ onChange }) {
       data: url,
       dotsOptions: { color, type: dotStyle },
       backgroundOptions: { color: transparent ? "transparent" : bgColor },
-      image: showLogo ? (logo || DEFAULTS.logo) : undefined,
+      image: showLogo ? (logoDataUrl || logo || DEFAULTS.logo) : undefined,
     });
-  }, [url, color, bgColor, transparent, dotStyle, showLogo, logo, onChange]);
+  }, [url, color, bgColor, transparent, dotStyle, showLogo, logo, logoDataUrl, onChange]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -213,17 +228,41 @@ export default function QrSettings({ onChange }) {
 
       {showLogo && (
         <div>
-        <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
-          <span>🖍️</span>
-          <span>โลโก้ (URL)</span>
-        </label>
-          <input
-            type="text"
-            value={logo}
-            onChange={(e) => setLogo(e.target.value)}
-          className="w-full p-3 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-300/50 dark:focus:ring-purple-300/50 focus:border-pink-300/50 dark:focus:border-purple-300/50 transition-all shadow-sm"
-            placeholder="https://..."
-          />
+          <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <span>🖍️</span>
+            <span>โลโก้</span>
+          </label>
+          <div className="flex flex-col gap-2">
+            <label className="w-full p-3 rounded-2xl bg-gradient-to-r from-pink-200 to-purple-200 dark:from-pink-300/40 dark:to-purple-300/40 hover:from-pink-300 hover:to-purple-300 dark:hover:from-pink-400/50 dark:hover:to-purple-400/50 border border-pink-300/50 dark:border-purple-300/50 text-center text-gray-800 dark:text-gray-100 cursor-pointer transition-all shadow-sm hover:shadow-md">
+              <input
+                type="file"
+                accept="image/png,.png"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setLogoFile(file);
+                    setLogo(""); // ล้าง URL เมื่อเลือกไฟล์
+                  }
+                }}
+                className="hidden"
+              />
+              <span className="text-sm font-medium">
+                {logoFile ? `📎 ${logoFile.name}` : "📁 เลือกไฟล์"}
+              </span>
+            </label>
+            <div className="text-center text-xs text-gray-500 dark:text-gray-400">หรือ</div>
+            <input
+              type="text"
+              value={logo}
+              onChange={(e) => {
+                setLogo(e.target.value);
+                setLogoFile(null); // ล้างไฟล์เมื่อใส่ URL
+                setLogoDataUrl("");
+              }}
+              className="w-full p-3 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-300/50 dark:focus:ring-purple-300/50 focus:border-pink-300/50 dark:focus:border-purple-300/50 transition-all shadow-sm"
+              placeholder="https://..."
+            />
+          </div>
         </div>
       )}
 
@@ -239,6 +278,8 @@ export default function QrSettings({ onChange }) {
             setDotStyle(DEFAULTS.dotStyle);
             setShowLogo(true);
             setLogo("");
+            setLogoFile(null);
+            setLogoDataUrl("");
             setShowColorPicker(false);
             setShowBgColorPicker(false);
           }}
