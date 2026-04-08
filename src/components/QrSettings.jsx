@@ -26,7 +26,7 @@ export default function QrSettings({ onChange }) {
   const [bgColor, setBgColor] = useState(DEFAULTS.bgColor);
   const [transparent, setTransparent] = useState(DEFAULTS.transparent);
   const [dotStyle, setDotStyle] = useState(DEFAULTS.dotStyle);
-  const [showLogo, setShowLogo] = useState(true);
+  const [showLogo, setShowLogo] = useState(false);
   const [logo, setLogo] = useState("");
   const [logoFile, setLogoFile] = useState(null);
   const [logoDataUrl, setLogoDataUrl] = useState("");
