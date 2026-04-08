@@ -32,3 +32,10 @@
 .dark .twitter-picker span {
   color: #ffffff !important;
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

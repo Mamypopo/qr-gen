@@ -20,12 +20,52 @@ const DEFAULTS = {
   logo: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg",
 };
 
+const PRESETS = [
+  {
+    id: "business",
+    label: "Business",
+    emoji: "💼",
+    color: "#000000",
+    bgColor: "#ffffff",
+    transparent: false,
+    dotStyle: "square",
+  },
+  {
+    id: "cute",
+    label: "Cute",
+    emoji: "🌸",
+    color: "#ec4899",
+    bgColor: "#fdf2f8",
+    transparent: false,
+    dotStyle: "dots",
+  },
+  {
+    id: "tech",
+    label: "Tech",
+    emoji: "💻",
+    color: "#06b6d4",
+    bgColor: "#0f172a",
+    transparent: false,
+    dotStyle: "classy",
+  },
+  {
+    id: "purple",
+    label: "Purple",
+    emoji: "✨",
+    color: "#a855f7",
+    bgColor: "#1e1b4b",
+    transparent: false,
+    dotStyle: "extra-rounded",
+  },
+];
+
 export default function QrSettings({ onChange }) {
   const [url, setUrl] = useState(DEFAULTS.url);
   const [color, setColor] = useState(DEFAULTS.color);
   const [bgColor, setBgColor] = useState(DEFAULTS.bgColor);
   const [transparent, setTransparent] = useState(DEFAULTS.transparent);
   const [dotStyle, setDotStyle] = useState(DEFAULTS.dotStyle);
+  const [activePreset, setActivePreset] = useState(null);
   const [showLogo, setShowLogo] = useState(false);
   const [logo, setLogo] = useState("");
   const [logoFile, setLogoFile] = useState(null);
@@ -56,12 +96,52 @@ export default function QrSettings({ onChange }) {
     });
   }, [url, color, bgColor, transparent, dotStyle, showLogo, logo, logoDataUrl, onChange]);
 
+  const applyPreset = (preset) => {
+    setActivePreset(preset.id);
+    setColor(preset.color);
+    setBgColor(preset.bgColor);
+    setTransparent(preset.transparent);
+    setDotStyle(preset.dotStyle);
+    setShowColorPicker(false);
+    setShowBgColorPicker(false);
+  };
+
   return (
     <div className="flex flex-col gap-4">
+      {/* Presets */}
       <div>
-        <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
-          <span>🔗</span>
-          <span>URL / ข้อความ</span>
+        <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+          ✨ Style Presets
+        </label>
+        <div className="grid grid-cols-4 gap-2">
+          {PRESETS.map((preset) => (
+            <button
+              key={preset.id}
+              type="button"
+              onClick={() => applyPreset(preset)}
+              className={`flex flex-col items-center gap-1 px-2 py-2.5 rounded-2xl text-xs font-medium transition-all border ${
+                activePreset === preset.id
+                  ? "bg-gradient-to-r from-pink-400 to-purple-400 dark:from-pink-500/60 dark:to-purple-500/60 text-white border-transparent shadow-md"
+                  : "bg-surface-light dark:bg-surface-dark text-gray-700 dark:text-gray-300 border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-800/50"
+              }`}
+            >
+              {/* Mini QR preview swatch */}
+              <div
+                className="w-8 h-8 rounded-lg border border-black/10 flex items-center justify-center"
+                style={{ backgroundColor: preset.transparent ? "transparent" : preset.bgColor }}
+              >
+                <div className="w-4 h-4 rounded-sm" style={{ backgroundColor: preset.color, opacity: 0.9 }} />
+              </div>
+              <span>{preset.emoji}</span>
+              <span>{preset.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+          🔗 URL / ข้อความ
         </label>
         <input
           type="text"
@@ -74,9 +154,8 @@ export default function QrSettings({ onChange }) {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="relative">
-          <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
-            <span>🎨</span>
-            <span>สี QR</span>
+          <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+            🎨 สี QR
           </label>
           <div
             onClick={() => {
@@ -114,9 +193,8 @@ export default function QrSettings({ onChange }) {
           )}
         </div>
         <div className="relative">
-          <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
-            <span>🖼️</span>
-            <span>พื้นหลัง</span>
+          <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+            🖼️ พื้นหลัง
           </label>
           <div
             onClick={() => {
@@ -181,7 +259,7 @@ export default function QrSettings({ onChange }) {
     
       <div>
         <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-          รูปแบบจุด (Dot Style):
+          ⬤ รูปแบบจุด
         </label>
         <div className="grid grid-cols-3 gap-2">
           {[
@@ -228,9 +306,8 @@ export default function QrSettings({ onChange }) {
 
       {showLogo && (
         <div>
-          <label className="flex items-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
-            <span>🖍️</span>
-            <span>โลโก้</span>
+          <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+            🖍️ โลโก้
           </label>
           <div className="flex flex-col gap-2">
             <label className="w-full p-3 rounded-2xl bg-gradient-to-r from-pink-200 to-purple-200 dark:from-pink-300/40 dark:to-purple-300/40 hover:from-pink-300 hover:to-purple-300 dark:hover:from-pink-400/50 dark:hover:to-purple-400/50 border border-pink-300/50 dark:border-purple-300/50 text-center text-gray-800 dark:text-gray-100 cursor-pointer transition-all shadow-sm hover:shadow-md">
@@ -276,7 +353,8 @@ export default function QrSettings({ onChange }) {
             setBgColor(DEFAULTS.bgColor);
             setTransparent(DEFAULTS.transparent);
             setDotStyle(DEFAULTS.dotStyle);
-            setShowLogo(true);
+            setActivePreset(null);
+            setShowLogo(false);
             setLogo("");
             setLogoFile(null);
             setLogoDataUrl("");

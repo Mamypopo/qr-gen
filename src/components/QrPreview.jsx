@@ -28,13 +28,11 @@ export default function QrPreview({ options }) {
   const hasFrame = backgroundColor && backgroundColor !== "transparent";
   const isTransparent = backgroundColor === "transparent";
 
-  const downloadQR = async (size) => {
-    // คำนวณ padding สำหรับพื้นหลัง (เพิ่ม 10% ของขนาด)
+  const downloadPNG = async (size) => {
     const padding = Math.round(size * 0.1);
     const canvasSize = size + padding * 2;
-    
-    // สร้าง QRCodeStyling instance ใหม่สำหรับการดาวน์โหลด (ไม่มี margin เพื่อควบคุมได้เอง)
-    const downloadQR = new QRCodeStyling({
+
+    const dlQR = new QRCodeStyling({
       width: size,
       height: size,
       qrOptions: { ...(options?.qrOptions || {}), margin: 0 },
@@ -44,44 +42,29 @@ export default function QrPreview({ options }) {
       image: options?.image,
     });
 
-    // สร้าง element ชั่วคราวสำหรับ render
     const tempContainer = document.createElement("div");
-    tempContainer.style.position = "absolute";
-    tempContainer.style.left = "-9999px";
-    tempContainer.style.width = `${size}px`;
-    tempContainer.style.height = `${size}px`;
+    tempContainer.style.cssText = "position:absolute;left:-9999px;width:" + size + "px;height:" + size + "px;";
     document.body.appendChild(tempContainer);
 
     try {
-      // Render QR Code
-      downloadQR.append(tempContainer);
-
-      // รอให้ render เสร็จ
+      dlQR.append(tempContainer);
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // หา canvas element
       const canvas = tempContainer.querySelector("canvas");
-      if (!canvas) {
-        throw new Error("Canvas not found");
-      }
+      if (!canvas) throw new Error("Canvas not found");
 
-      // สร้าง canvas ใหม่ที่มีขนาดใหญ่กว่า
       const finalCanvas = document.createElement("canvas");
       finalCanvas.width = canvasSize;
       finalCanvas.height = canvasSize;
       const ctx = finalCanvas.getContext("2d");
 
-      // วาดพื้นหลัง
       const bgColor = options?.backgroundOptions?.color || "#ffffff";
       if (bgColor !== "transparent") {
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvasSize, canvasSize);
       }
-
-      // วาด QR Code ไว้กลาง canvas
       ctx.drawImage(canvas, padding, padding, size, size);
 
-      // ดาวน์โหลด
       finalCanvas.toBlob((blob) => {
         if (blob) {
           const url = URL.createObjectURL(blob);
@@ -95,22 +78,22 @@ export default function QrPreview({ options }) {
         }
       });
 
-      // รอให้ดาวน์โหลดเสร็จแล้วลบ element ชั่วคราว
       setTimeout(() => {
-        if (tempContainer.parentNode) {
-          document.body.removeChild(tempContainer);
-        }
+        if (tempContainer.parentNode) document.body.removeChild(tempContainer);
       }, 500);
     } catch (error) {
-      console.error("Error downloading QR code:", error);
-      if (tempContainer.parentNode) {
-        document.body.removeChild(tempContainer);
-      }
+      console.error("Error downloading PNG:", error);
+      if (tempContainer.parentNode) document.body.removeChild(tempContainer);
     }
   };
 
+  const downloadSVG = () => {
+    qrRef.current.download({ name: "qr-code", extension: "svg" });
+  };
+
   return (
-    <div className="flex flex-col items-center w-full ">
+    <div className="flex flex-col items-center w-full gap-5">
+      {/* QR Preview */}
       <div className="rounded-3xl border-2 border-dashed border-pink-300/60 dark:border-purple-300/60 bg-pink-50/30 dark:bg-purple-900/10 p-6 shadow-lg dark:shadow-2xl">
         <div
           className="rounded-2xl border border-border-light dark:border-border-dark shadow-sm p-6"
@@ -127,25 +110,35 @@ export default function QrPreview({ options }) {
               : { backgroundColor: "transparent" }
           }
         >
-          <div ref={ref} className="flex items-center justify-center"></div>
+          <div ref={ref} className="flex items-center justify-center" />
         </div>
       </div>
 
-      <div className="w-full mt-6">
-        <div className="mb-2 text-base font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-          <span>⬇️ Export PNG</span>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          {[500, 1000, 1500, 2000].map((s) => (
+      {/* Export */}
+      <div className="w-full">
+        <p className="text-base font-medium text-gray-700 dark:text-gray-300 mb-3">⬇️ ดาวน์โหลด</p>
+
+        {/* PNG presets */}
+        <div className="grid grid-cols-3 gap-2 mb-2">
+          {[500, 1000, 2000].map((size) => (
             <button
-              key={s}
-              onClick={() => downloadQR(s)}
-              className="bg-gradient-to-r from-green-300 to-emerald-300 dark:from-green-400/60 dark:to-emerald-400/60 hover:from-green-400 hover:to-emerald-400 dark:hover:from-green-500/70 dark:hover:to-emerald-500/70 text-gray-800 dark:text-gray-100 py-3 rounded-2xl text-base font-medium transition-all duration-200 shadow-md hover:shadow-lg border border-green-400/50 dark:border-green-500/40"
+              key={size}
+              onClick={() => downloadPNG(size)}
+              className="py-3 rounded-2xl text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md border bg-gradient-to-r from-green-300 to-emerald-300 dark:from-green-400/60 dark:to-emerald-400/60 hover:from-green-400 hover:to-emerald-400 dark:hover:from-green-500/70 dark:hover:to-emerald-500/70 border-green-400/50 dark:border-green-500/40 text-gray-800 dark:text-gray-100"
             >
-              {s}×{s}
+              {size}×{size}
             </button>
           ))}
         </div>
+
+        {/* SVG */}
+        <button
+          onClick={downloadSVG}
+          className="w-full py-3 rounded-2xl text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md border bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-400/50 dark:to-pink-400/50 hover:from-purple-300 hover:to-pink-300 dark:hover:from-purple-500/60 dark:hover:to-pink-500/60 border-purple-300/50 dark:border-purple-500/40 text-gray-800 dark:text-gray-100 flex items-center justify-center gap-2"
+        >
+          <span>SVG</span>
+          <span className="text-xs opacity-60 font-normal">Vector · ขยายไม่แตก</span>
+        </button>
       </div>
     </div>
   );

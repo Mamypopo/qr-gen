@@ -12,11 +12,14 @@
     "postinstall": "node -e \"const os=require('os');const platform=os.platform();if(platform==='linux'){require('child_process').execSync('npm install --include=optional --no-save @rollup/rollup-linux-x64-gnu@^4.52.5',{stdio:'inherit'})}else if(platform==='darwin'){require('child_process').execSync('npm install --include=optional --no-save @rollup/rollup-darwin-x64@^4.52.5 @rollup/rollup-darwin-arm64@^4.52.5',{stdio:'inherit'})}else if(platform==='win32'){require('child_process').execSync('npm install --include=optional --no-save @rollup/rollup-win32-x64-msvc@^4.52.5',{stdio:'inherit'})}\" || true"
   },
   "dependencies": {
+    "browser-image-compression": "^2.0.2",
     "clsx": "^2.1.1",
+    "pdf-lib": "^1.17.1",
     "qr-code-styling": "^1.9.2",
     "react": "^19.1.1",
     "react-color": "^2.19.3",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.14.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
