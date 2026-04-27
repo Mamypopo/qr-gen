@@ -1,6 +1,6 @@
 // src/components/QrSettings.jsx
 import { useState, useEffect } from "react";
-import { TwitterPicker } from "react-color";
+import { HexColorPicker } from "react-colorful";
 
 // ฟังก์ชันตรวจสอบสีเพื่อเลือกข้อความสีขาวหรือดำ
 const getContrastColor = (hexColor) => {
@@ -11,9 +11,15 @@ const getContrastColor = (hexColor) => {
   return brightness > 128 ? "#000000" : "#ffffff";
 };
 
+const isValidHexColor = (value) => /^#[0-9A-Fa-f]{6}$/.test(value);
+
 const DEFAULTS = {
   url: "https://example.com",
   color: "#000000",
+  gradientEnabled: false,
+  gradientStart: "#000000",
+  gradientEnd: "#7c3aed",
+  gradientAngle: 0,
   bgColor: "#ffffff",
   transparent: false,
   dotStyle: "rounded",
@@ -62,6 +68,10 @@ const PRESETS = [
 export default function QrSettings({ onChange }) {
   const [url, setUrl] = useState(DEFAULTS.url);
   const [color, setColor] = useState(DEFAULTS.color);
+  const [gradientEnabled, setGradientEnabled] = useState(DEFAULTS.gradientEnabled);
+  const [gradientStart, setGradientStart] = useState(DEFAULTS.gradientStart);
+  const [gradientEnd, setGradientEnd] = useState(DEFAULTS.gradientEnd);
+  const [gradientAngle, setGradientAngle] = useState(DEFAULTS.gradientAngle);
   const [bgColor, setBgColor] = useState(DEFAULTS.bgColor);
   const [transparent, setTransparent] = useState(DEFAULTS.transparent);
   const [dotStyle, setDotStyle] = useState(DEFAULTS.dotStyle);
@@ -72,6 +82,8 @@ export default function QrSettings({ onChange }) {
   const [logoDataUrl, setLogoDataUrl] = useState("");
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showBgColorPicker, setShowBgColorPicker] = useState(false);
+  const [showGradientStartPicker, setShowGradientStartPicker] = useState(false);
+  const [showGradientEndPicker, setShowGradientEndPicker] = useState(false);
 
   // แปลงไฟล์เป็น data URL
   useEffect(() => {
@@ -88,17 +100,49 @@ export default function QrSettings({ onChange }) {
 
   // อัปเดต QR Code อัตโนมัติเมื่อมีการเปลี่ยนแปลง
   useEffect(() => {
+    const dotsOptions = gradientEnabled
+      ? {
+          type: dotStyle,
+          gradient: {
+            type: "linear",
+            rotation: (Number(gradientAngle) * Math.PI) / 180,
+            colorStops: [
+              { offset: 0, color: gradientStart },
+              { offset: 1, color: gradientEnd },
+            ],
+          },
+        }
+      : { color, type: dotStyle, gradient: null };
+
     onChange({
       data: url,
-      dotsOptions: { color, type: dotStyle },
+      dotsOptions,
       backgroundOptions: { color: transparent ? "transparent" : bgColor },
       image: showLogo ? (logoDataUrl || logo || DEFAULTS.logo) : undefined,
     });
-  }, [url, color, bgColor, transparent, dotStyle, showLogo, logo, logoDataUrl, onChange]);
+  }, [
+    url,
+    color,
+    gradientEnabled,
+    gradientStart,
+    gradientEnd,
+    gradientAngle,
+    bgColor,
+    transparent,
+    dotStyle,
+    showLogo,
+    logo,
+    logoDataUrl,
+    onChange,
+  ]);
 
   const applyPreset = (preset) => {
     setActivePreset(preset.id);
     setColor(preset.color);
+    setGradientEnabled(false);
+    setGradientStart(preset.color);
+    setGradientEnd(DEFAULTS.gradientEnd);
+    setGradientAngle(DEFAULTS.gradientAngle);
     setBgColor(preset.bgColor);
     setTransparent(preset.transparent);
     setDotStyle(preset.dotStyle);
@@ -159,11 +203,17 @@ export default function QrSettings({ onChange }) {
           </label>
           <div
             onClick={() => {
-              setShowColorPicker(!showColorPicker);
+              if (!gradientEnabled) {
+                setShowColorPicker(!showColorPicker);
+              }
               setShowBgColorPicker(false);
+              setShowGradientStartPicker(false);
+              setShowGradientEndPicker(false);
             }}
-            className="w-full h-12 rounded-2xl cursor-pointer border border-border-light dark:border-border-dark flex items-center justify-center transition-all hover:opacity-90 shadow-sm hover:shadow-md"
-            style={{ backgroundColor: color }}
+            className={`w-full h-12 rounded-2xl border border-border-light dark:border-border-dark flex items-center justify-center transition-all shadow-sm ${
+              gradientEnabled ? "opacity-70 cursor-not-allowed" : "cursor-pointer hover:opacity-90 hover:shadow-md"
+            }`}
+            style={gradientEnabled ? { backgroundColor: color } : { backgroundColor: color }}
           >
             <span
               className="text-sm font-medium drop-shadow-md"
@@ -175,20 +225,30 @@ export default function QrSettings({ onChange }) {
             </span>
           </div>
           {showColorPicker && (
-            <div className="absolute z-10 mt-2">
+            <div className="absolute z-30 mt-2">
               <div
-                className="fixed inset-0"
+                className="fixed inset-0 z-10"
                 onClick={() => setShowColorPicker(false)}
               ></div>
-              <TwitterPicker
-                color={color}
-                onChange={(color) => {
-                  setColor(color.hex);
-                }}
-                onChangeComplete={(color) => {
-                  setColor(color.hex);
-                }}
-              />
+              <div
+                className="relative z-20 rounded-2xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark p-3 shadow-lg dark:shadow-2xl w-[240px]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <HexColorPicker color={color} onChange={setColor} />
+                <input
+                  type="text"
+                  value={color}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (isValidHexColor(value)) setColor(value);
+                  }}
+                  onBlur={(e) => {
+                    const value = e.target.value;
+                    if (!isValidHexColor(value)) setColor(DEFAULTS.color);
+                  }}
+                  className="mt-3 w-full p-2 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm text-gray-900 dark:text-gray-100"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -201,6 +261,8 @@ export default function QrSettings({ onChange }) {
               if (!transparent) {
                 setShowBgColorPicker(!showBgColorPicker);
                 setShowColorPicker(false);
+                setShowGradientStartPicker(false);
+                setShowGradientEndPicker(false);
               }
             }}
             className={`w-full h-12 rounded-2xl border border-border-light dark:border-border-dark flex items-center justify-center transition-all ${
@@ -222,24 +284,160 @@ export default function QrSettings({ onChange }) {
             </span>
           </div>
           {showBgColorPicker && !transparent && (
-            <div className="absolute z-10 mt-2">
+            <div className="absolute z-30 mt-2">
               <div
-                className="fixed inset-0"
+                className="fixed inset-0 z-10"
                 onClick={() => setShowBgColorPicker(false)}
               ></div>
-              <TwitterPicker
-                color={bgColor}
-                onChange={(color) => {
-                  setBgColor(color.hex);
-                }}
-                onChangeComplete={(color) => {
-                  setBgColor(color.hex);
-                }}
-              />
+              <div
+                className="relative z-20 rounded-2xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark p-3 shadow-lg dark:shadow-2xl w-[240px]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <HexColorPicker color={bgColor} onChange={setBgColor} />
+                <input
+                  type="text"
+                  value={bgColor}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (isValidHexColor(value)) setBgColor(value);
+                  }}
+                  onBlur={(e) => {
+                    const value = e.target.value;
+                    if (!isValidHexColor(value)) setBgColor(DEFAULTS.bgColor);
+                  }}
+                  className="mt-3 w-full p-2 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm text-gray-900 dark:text-gray-100"
+                />
+              </div>
             </div>
           )}
         </div>
       </div>
+
+      <label className="inline-flex items-center justify-between cursor-pointer py-1">
+        <span className="text-base font-medium text-gray-700 dark:text-gray-300">ไล่สี Gradient</span>
+        <div className="relative inline-flex items-center">
+          <input
+            type="checkbox"
+            checked={gradientEnabled}
+            onChange={(e) => {
+              const enabled = e.target.checked;
+              setGradientEnabled(enabled);
+              if (enabled) {
+                setGradientStart(color);
+              } else {
+                setColor(gradientStart);
+              }
+            }}
+            className="sr-only peer"
+          />
+          <div className="w-11 h-6 bg-gradient-to-r from-pink-200 to-purple-200 dark:from-pink-300/30 dark:to-purple-300/30 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-pink-300/50 dark:peer-focus:ring-purple-300/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-pink-300/50 dark:after:border-purple-300/50 after:border-2 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-pink-400 peer-checked:to-purple-400 dark:peer-checked:from-pink-500/50 dark:peer-checked:to-purple-500/50 shadow-inner"></div>
+        </div>
+      </label>
+
+      {gradientEnabled && (
+        <div className="rounded-2xl border border-border-light dark:border-border-dark p-3 space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="relative">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">สีเริ่มต้น</label>
+              <div
+                onClick={() => {
+                  setShowGradientStartPicker(!showGradientStartPicker);
+                  setShowGradientEndPicker(false);
+                  setShowColorPicker(false);
+                  setShowBgColorPicker(false);
+                }}
+                className="w-full h-11 rounded-xl border border-border-light dark:border-border-dark cursor-pointer flex items-center justify-center text-sm font-medium"
+                style={{ backgroundColor: gradientStart, color: getContrastColor(gradientStart) }}
+              >
+                {gradientStart.toUpperCase()}
+              </div>
+              {showGradientStartPicker && (
+                <div className="absolute z-30 mt-2">
+                  <div className="fixed inset-0 z-10" onClick={() => setShowGradientStartPicker(false)}></div>
+                  <div
+                    className="relative z-20 rounded-2xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark p-3 shadow-lg dark:shadow-2xl w-[240px]"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <HexColorPicker color={gradientStart} onChange={setGradientStart} />
+                    <input
+                      type="text"
+                      value={gradientStart}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (isValidHexColor(value)) setGradientStart(value);
+                      }}
+                      onBlur={(e) => {
+                        const value = e.target.value;
+                        if (!isValidHexColor(value)) setGradientStart(DEFAULTS.gradientStart);
+                      }}
+                      className="mt-3 w-full p-2 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm text-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="relative">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">สีปลายทาง</label>
+              <div
+                onClick={() => {
+                  setShowGradientEndPicker(!showGradientEndPicker);
+                  setShowGradientStartPicker(false);
+                  setShowColorPicker(false);
+                  setShowBgColorPicker(false);
+                }}
+                className="w-full h-11 rounded-xl border border-border-light dark:border-border-dark cursor-pointer flex items-center justify-center text-sm font-medium"
+                style={{ backgroundColor: gradientEnd, color: getContrastColor(gradientEnd) }}
+              >
+                {gradientEnd.toUpperCase()}
+              </div>
+              {showGradientEndPicker && (
+                <div className="absolute z-30 mt-2">
+                  <div className="fixed inset-0 z-10" onClick={() => setShowGradientEndPicker(false)}></div>
+                  <div
+                    className="relative z-20 rounded-2xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark p-3 shadow-lg dark:shadow-2xl w-[240px]"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <HexColorPicker color={gradientEnd} onChange={setGradientEnd} />
+                    <input
+                      type="text"
+                      value={gradientEnd}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (isValidHexColor(value)) setGradientEnd(value);
+                      }}
+                      onBlur={(e) => {
+                        const value = e.target.value;
+                        if (!isValidHexColor(value)) setGradientEnd(DEFAULTS.gradientEnd);
+                      }}
+                      className="mt-3 w-full p-2 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm text-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+              มุมไล่สี ({gradientAngle}deg)
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="360"
+              step="1"
+              value={gradientAngle}
+              onChange={(e) => setGradientAngle(Number(e.target.value))}
+              className="w-full accent-purple-500"
+            />
+          </div>
+          <div
+            className="h-10 rounded-xl border border-border-light dark:border-border-dark"
+            style={{
+              background: `linear-gradient(${gradientAngle}deg, ${gradientStart}, ${gradientEnd})`,
+            }}
+          />
+        </div>
+      )}
 
       <label className="inline-flex items-center justify-between cursor-pointer py-1">
         <span className="text-base font-medium text-gray-700 dark:text-gray-300">
@@ -350,6 +548,10 @@ export default function QrSettings({ onChange }) {
           onClick={() => {
             setUrl(DEFAULTS.url);
             setColor(DEFAULTS.color);
+            setGradientEnabled(DEFAULTS.gradientEnabled);
+            setGradientStart(DEFAULTS.gradientStart);
+            setGradientEnd(DEFAULTS.gradientEnd);
+            setGradientAngle(DEFAULTS.gradientAngle);
             setBgColor(DEFAULTS.bgColor);
             setTransparent(DEFAULTS.transparent);
             setDotStyle(DEFAULTS.dotStyle);
@@ -360,6 +562,8 @@ export default function QrSettings({ onChange }) {
             setLogoDataUrl("");
             setShowColorPicker(false);
             setShowBgColorPicker(false);
+            setShowGradientStartPicker(false);
+            setShowGradientEndPicker(false);
           }}
           className="flex-1 bg-gradient-to-r from-orange-200 to-pink-200 dark:from-orange-300/40 dark:to-pink-300/40 hover:from-orange-300 hover:to-pink-300 dark:hover:from-orange-400/50 dark:hover:to-pink-400/50 text-gray-800 dark:text-gray-100 py-3 rounded-2xl transition-all shadow-md hover:shadow-lg border border-orange-300/50 dark:border-orange-400/30"
         >

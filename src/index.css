@@ -33,6 +33,51 @@
   color: #ffffff !important;
 }
 
+.react-colorful {
+  width: 100% !important;
+  gap: 10px !important;
+}
+
+.react-colorful__saturation {
+  border-radius: 10px !important;
+  border-bottom: none !important;
+  min-height: 150px;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-bottom: none !important;
+}
+
+.dark .react-colorful__saturation {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-bottom: none !important;
+}
+
+.react-colorful__hue,
+.react-colorful__alpha {
+  border-radius: 999px !important;
+  height: 14px !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+.dark .react-colorful__hue,
+.dark .react-colorful__alpha {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.react-colorful__pointer {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+.dark .react-colorful__pointer {
+  box-shadow:
+    0 0 0 2px #2d2d2d,
+    0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
 .scrollbar-none {
   scrollbar-width: none;
 }

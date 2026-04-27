@@ -26,7 +26,7 @@ export default function DonationModal({ onClose }) {
         </button>
 
         <p className="text-base font-semibold text-gray-800 dark:text-gray-100">
-        รวมสมทบทุน มาม่าซองสุดท้าย 🍜🥺
+        รวมสมทบทุน อาหารลิง🍜🥺
         </p>
 
         <img
