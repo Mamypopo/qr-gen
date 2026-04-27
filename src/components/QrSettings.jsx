@@ -23,6 +23,8 @@ const DEFAULTS = {
   bgColor: "#ffffff",
   transparent: false,
   dotStyle: "rounded",
+  cornersSquareType: "square",
+  cornersDotType: "square",
   logo: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg",
 };
 
@@ -75,6 +77,8 @@ export default function QrSettings({ onChange }) {
   const [bgColor, setBgColor] = useState(DEFAULTS.bgColor);
   const [transparent, setTransparent] = useState(DEFAULTS.transparent);
   const [dotStyle, setDotStyle] = useState(DEFAULTS.dotStyle);
+  const [cornersSquareType, setCornersSquareType] = useState(DEFAULTS.cornersSquareType);
+  const [cornersDotType, setCornersDotType] = useState(DEFAULTS.cornersDotType);
   const [activePreset, setActivePreset] = useState(null);
   const [showLogo, setShowLogo] = useState(false);
   const [logo, setLogo] = useState("");
@@ -117,6 +121,8 @@ export default function QrSettings({ onChange }) {
     onChange({
       data: url,
       dotsOptions,
+      cornersSquareOptions: { type: cornersSquareType },
+      cornersDotOptions: { type: cornersDotType },
       backgroundOptions: { color: transparent ? "transparent" : bgColor },
       image: showLogo ? (logoDataUrl || logo || DEFAULTS.logo) : undefined,
     });
@@ -130,6 +136,8 @@ export default function QrSettings({ onChange }) {
     bgColor,
     transparent,
     dotStyle,
+    cornersSquareType,
+    cornersDotType,
     showLogo,
     logo,
     logoDataUrl,
@@ -146,6 +154,8 @@ export default function QrSettings({ onChange }) {
     setBgColor(preset.bgColor);
     setTransparent(preset.transparent);
     setDotStyle(preset.dotStyle);
+    setCornersSquareType(DEFAULTS.cornersSquareType);
+    setCornersDotType(DEFAULTS.cornersDotType);
     setShowColorPicker(false);
     setShowBgColorPicker(false);
   };
@@ -487,6 +497,61 @@ export default function QrSettings({ onChange }) {
       </div>
 
 
+      {/* Corner Square Style */}
+      <div>
+        <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+          ◼ กรอบมุม
+        </label>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { value: "square", label: "Square", emoji: "⬜" },
+            { value: "dot", label: "Circle", emoji: "⭕" },
+            { value: "extra-rounded", label: "Rounded", emoji: "🔘" },
+          ].map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setCornersSquareType(option.value)}
+              className={`px-2 py-2 rounded-full text-sm font-medium transition-colors flex items-center justify-center gap-1 ${
+                cornersSquareType === option.value
+                  ? "bg-gradient-to-r from-pink-400 to-purple-400 dark:from-pink-500/60 dark:to-purple-500/60 text-white shadow-md"
+                  : "bg-surface-light dark:bg-surface-dark text-gray-700 dark:text-gray-300 border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-800/50"
+              }`}
+            >
+              <span>{option.emoji}</span>
+              <span>{option.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Corner Dot Style */}
+      <div>
+        <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+          • จุดในมุม
+        </label>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { value: "square", label: "Square", emoji: "⬜" },
+            { value: "dot", label: "Circle", emoji: "⭕" },
+          ].map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setCornersDotType(option.value)}
+              className={`px-2 py-2 rounded-full text-sm font-medium transition-colors flex items-center justify-center gap-1 ${
+                cornersDotType === option.value
+                  ? "bg-gradient-to-r from-pink-400 to-purple-400 dark:from-pink-500/60 dark:to-purple-500/60 text-white shadow-md"
+                  : "bg-surface-light dark:bg-surface-dark text-gray-700 dark:text-gray-300 border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-800/50"
+              }`}
+            >
+              <span>{option.emoji}</span>
+              <span>{option.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <label className="inline-flex items-center justify-between cursor-pointer py-1">
         <span className="text-base font-medium text-gray-700 dark:text-gray-300">
           แสดงโลโก้ตรงกลาง
@@ -555,6 +620,8 @@ export default function QrSettings({ onChange }) {
             setBgColor(DEFAULTS.bgColor);
             setTransparent(DEFAULTS.transparent);
             setDotStyle(DEFAULTS.dotStyle);
+            setCornersSquareType(DEFAULTS.cornersSquareType);
+            setCornersDotType(DEFAULTS.cornersDotType);
             setActivePreset(null);
             setShowLogo(false);
             setLogo("");

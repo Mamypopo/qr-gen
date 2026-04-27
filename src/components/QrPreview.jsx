@@ -3,13 +3,15 @@ import { useEffect, useRef } from "react";
 import QRCodeStyling from "qr-code-styling";
 
 export default function QrPreview({ options }) {
+  const { _visualEffect: _, ...qrOptions } = options || {};
+
   const ref = useRef(null);
   const qrRef = useRef(
     new QRCodeStyling({
       width: 250,
       height: 250,
       qrOptions: { margin: 80 },
-      ...options,
+      ...qrOptions,
     })
   );
 
@@ -19,12 +21,12 @@ export default function QrPreview({ options }) {
 
   useEffect(() => {
     qrRef.current.update({
-      ...options,
-      qrOptions: { ...(options?.qrOptions || {}), margin: 80 },
+      ...qrOptions,
+      qrOptions: { ...(qrOptions?.qrOptions || {}), margin: 80 },
     });
-  }, [options]);
+  }, [qrOptions]);
 
-  const backgroundColor = options?.backgroundOptions?.color;
+  const backgroundColor = qrOptions?.backgroundOptions?.color;
   const hasFrame = backgroundColor && backgroundColor !== "transparent";
   const isTransparent = backgroundColor === "transparent";
 
@@ -35,11 +37,13 @@ export default function QrPreview({ options }) {
     const dlQR = new QRCodeStyling({
       width: size,
       height: size,
-      qrOptions: { ...(options?.qrOptions || {}), margin: 0 },
-      data: options?.data || "https://example.com",
-      dotsOptions: options?.dotsOptions || { color: "#000000", type: "rounded" },
-      backgroundOptions: options?.backgroundOptions || { color: "#ffffff" },
-      image: options?.image,
+      qrOptions: { ...(qrOptions?.qrOptions || {}), margin: 0 },
+      data: qrOptions?.data || "https://example.com",
+      dotsOptions: qrOptions?.dotsOptions || { color: "#000000", type: "rounded" },
+      cornersSquareOptions: qrOptions?.cornersSquareOptions,
+      cornersDotOptions: qrOptions?.cornersDotOptions,
+      backgroundOptions: qrOptions?.backgroundOptions || { color: "#ffffff" },
+      image: qrOptions?.image,
     });
 
     const tempContainer = document.createElement("div");
@@ -58,7 +62,7 @@ export default function QrPreview({ options }) {
       finalCanvas.height = canvasSize;
       const ctx = finalCanvas.getContext("2d");
 
-      const bgColor = options?.backgroundOptions?.color || "#ffffff";
+      const bgColor = qrOptions?.backgroundOptions?.color || "#ffffff";
       if (bgColor !== "transparent") {
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvasSize, canvasSize);
