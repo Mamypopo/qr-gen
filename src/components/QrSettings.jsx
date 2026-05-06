@@ -72,12 +72,19 @@ const MODES = [
   { id: "location", label: "Location", emoji: "📍" },
 ];
 
+// qrcode-generator ทำ charCodeAt(i) & 0xff ซึ่งตัด byte บนทิ้ง
+// แก้โดยแปลงเป็น UTF-8 bytes ก่อน แล้วแทนด้วย Latin-1 chars (charCode < 256)
+function toUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  return Array.from(bytes, (b) => String.fromCharCode(b)).join("");
+}
+
 function buildQrData(mode, fields) {
   switch (mode) {
     case "url":
       return fields.url || "https://example.com";
     case "text":
-      return fields.text || " ";
+      return toUtf8(fields.text || " ");
     case "wifi": {
       const sec = fields.wifiSecurity || "WPA";
       const ssid = (fields.wifiSsid || "").replace(/([;,:"\\])/g, "\\$1");
