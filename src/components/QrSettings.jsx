@@ -134,6 +134,7 @@ function buildQrData(mode, fields) {
 const SI = (slug) => `/logos/${slug}.svg`;
 
 const PRESET_LOGOS = [
+  { label: "WiFi",      url: "/logos/wifi.svg",  bg: "#1976D2" },
   { label: "LINE",      url: SI("line"),      bg: "#00B900" },
   { label: "Facebook",  url: SI("facebook"),  bg: "#1877F2" },
   { label: "Instagram", url: SI("instagram"), bg: "#E4405F" },
