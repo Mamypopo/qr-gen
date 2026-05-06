@@ -72,8 +72,7 @@ const MODES = [
   { id: "location", label: "Location", emoji: "📍" },
 ];
 
-// qrcode-generator ทำ charCodeAt(i) & 0xff ซึ่งตัด byte บนทิ้ง
-// แก้โดยแปลงเป็น UTF-8 bytes ก่อน แล้วแทนด้วย Latin-1 chars (charCode < 256)
+
 function toUtf8(str) {
   const bytes = new TextEncoder().encode(str);
   return Array.from(bytes, (b) => String.fromCharCode(b)).join("");
@@ -131,6 +130,29 @@ function buildQrData(mode, fields) {
       return "";
   }
 }
+
+const SI = (slug) => `/logos/${slug}.svg`;
+
+const PRESET_LOGOS = [
+  { label: "LINE",      url: SI("line"),      bg: "#00B900" },
+  { label: "Facebook",  url: SI("facebook"),  bg: "#1877F2" },
+  { label: "Instagram", url: SI("instagram"), bg: "#E4405F" },
+  { label: "YouTube",   url: SI("youtube"),   bg: "#FF0000" },
+  { label: "TikTok",    url: SI("tiktok"),    bg: "#010101" },
+  { label: "X",         url: SI("x"),         bg: "#000000" },
+  { label: "WhatsApp",  url: SI("whatsapp"),  bg: "#25D366" },
+  { label: "Telegram",  url: SI("telegram"),  bg: "#26A5E4" },
+  { label: "Discord",   url: SI("discord"),   bg: "#5865F2" },
+  { label: "Spotify",   url: SI("spotify"),   bg: "#1DB954" },
+  { label: "LinkedIn",  url: SI("linkedin"),  bg: "#0A66C2" },
+  { label: "Pinterest", url: SI("pinterest"), bg: "#E60023" },
+  { label: "GitHub",    url: SI("github"),    bg: "#181717" },
+  { label: "Netflix",   url: SI("netflix"),   bg: "#E50914" },
+  { label: "Google",    url: SI("google"),    bg: "#4285F4" },
+  { label: "Apple",     url: SI("apple"),     bg: "#555555" },
+  { label: "Snapchat",  url: SI("snapchat"),  bg: "#FFFC00" },
+  { label: "Twitch",    url: SI("twitch"),    bg: "#9146FF" },
+];
 
 const inputClass =
   "w-full p-3 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-300/50 dark:focus:ring-purple-300/50 transition-all shadow-sm";
@@ -304,6 +326,7 @@ export default function QrSettings({ onChange }) {
   const [logo, setLogo] = useState("");
   const [logoFile, setLogoFile] = useState(null);
   const [logoDataUrl, setLogoDataUrl] = useState("");
+  const [selectedPresetLogo, setSelectedPresetLogo] = useState(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const [showGradientStartPicker, setShowGradientStartPicker] = useState(false);
@@ -397,6 +420,7 @@ export default function QrSettings({ onChange }) {
     setLogo("");
     setLogoFile(null);
     setLogoDataUrl("");
+    setSelectedPresetLogo(null);
     setShowColorPicker(false);
     setShowBgColorPicker(false);
     setShowGradientStartPicker(false);
@@ -744,32 +768,65 @@ export default function QrSettings({ onChange }) {
       </label>
 
       {showLogo && (
-        <div>
-          <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">🖍️ โลโก้</label>
-          <div className="flex flex-col gap-2">
-            <label className="w-full p-3 rounded-2xl bg-gradient-to-r from-pink-200 to-purple-200 dark:from-pink-300/40 dark:to-purple-300/40 hover:from-pink-300 hover:to-purple-300 dark:hover:from-pink-400/50 dark:hover:to-purple-400/50 border border-pink-300/50 dark:border-purple-300/50 text-center text-gray-800 dark:text-gray-100 cursor-pointer transition-all shadow-sm hover:shadow-md">
-              <input
-                type="file"
-                accept="image/png,.png"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) { setLogoFile(file); setLogo(""); }
-                }}
-                className="hidden"
-              />
-              <span className="text-sm font-medium">
-                {logoFile ? `📎 ${logoFile.name}` : "📁 เลือกไฟล์"}
-              </span>
-            </label>
-            <div className="text-center text-xs text-gray-500 dark:text-gray-400">หรือ</div>
-            <input
-              type="text"
-              value={logo}
-              onChange={(e) => { setLogo(e.target.value); setLogoFile(null); setLogoDataUrl(""); }}
-              className="w-full p-3 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-300/50 dark:focus:ring-purple-300/50 transition-all shadow-sm"
-              placeholder="https://..."
-            />
+        <div className="flex flex-col gap-3">
+          <label className="text-base font-medium text-gray-700 dark:text-gray-300">🖍️ โลโก้</label>
+
+          {/* Preset logos */}
+          <div className="grid grid-cols-6 gap-2">
+            {PRESET_LOGOS.map((p) => {
+              const isSelected = selectedPresetLogo === p.label;
+              return (
+                <button
+                  key={p.label}
+                  type="button"
+                  title={p.label}
+                  onClick={() => {
+                    setSelectedPresetLogo(p.label);
+                    setLogoFile(null);
+                    setLogoDataUrl("");
+                    setLogo(p.url);
+                  }}
+                  className={`flex flex-col items-center gap-1 p-2 rounded-2xl border transition-all ${
+                    isSelected
+                      ? "border-purple-400 ring-2 ring-purple-400 shadow-md"
+                      : "border-border-light dark:border-border-dark hover:scale-105"
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-white border border-gray-100">
+                    <img src={p.url} alt={p.label} className="w-6 h-6 object-contain" />
+                  </div>
+                  <span className="text-[10px] text-gray-600 dark:text-gray-400 leading-tight truncate w-full text-center">
+                    {p.label}
+                  </span>
+                </button>
+              );
+            })}
           </div>
+
+          <div className="text-center text-xs text-gray-400 dark:text-gray-500">หรืออัพโหลดเอง</div>
+
+          {/* Upload / URL */}
+          <label className="w-full p-3 rounded-2xl bg-gradient-to-r from-pink-200 to-purple-200 dark:from-pink-300/40 dark:to-purple-300/40 hover:from-pink-300 hover:to-purple-300 dark:hover:from-pink-400/50 dark:hover:to-purple-400/50 border border-pink-300/50 dark:border-purple-300/50 text-center text-gray-800 dark:text-gray-100 cursor-pointer transition-all shadow-sm hover:shadow-md">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) { setLogoFile(file); setLogo(""); setSelectedPresetLogo(null); }
+              }}
+              className="hidden"
+            />
+            <span className="text-sm font-medium">
+              {logoFile ? `📎 ${logoFile.name}` : "📁 เลือกไฟล์"}
+            </span>
+          </label>
+          <input
+            type="text"
+            value={selectedPresetLogo ? "" : logo}
+            onChange={(e) => { setLogo(e.target.value); setLogoFile(null); setLogoDataUrl(""); setSelectedPresetLogo(null); }}
+            className="w-full p-3 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-300/50 dark:focus:ring-purple-300/50 transition-all shadow-sm"
+            placeholder="หรือวาง URL รูปโลโก้..."
+          />
         </div>
       )}
 
