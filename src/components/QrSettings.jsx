@@ -93,8 +93,10 @@ function buildQrData(mode, fields) {
     }
     case "phone":
       return `tel:${fields.phone || ""}`;
-    case "sms":
-      return `smsto:${fields.smsPhone || ""}${fields.smsMessage ? ":" + fields.smsMessage : ""}`;
+    case "sms": {
+      const body = fields.smsMessage ? `?body=${encodeURIComponent(fields.smsMessage)}` : "";
+      return `sms:${fields.smsPhone || ""}${body}`;
+    }
     case "whatsapp": {
       const phone = (fields.waPhone || "").replace(/\D/g, "");
       return `https://wa.me/${phone}${fields.waMessage ? "?text=" + encodeURIComponent(fields.waMessage) : ""}`;
