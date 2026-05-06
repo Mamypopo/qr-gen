@@ -158,6 +158,7 @@ const inputClass =
   "w-full p-3 rounded-2xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-300/50 dark:focus:ring-purple-300/50 transition-all shadow-sm";
 const labelClass = "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 block";
 
+
 function ModeFields({ mode, fields, setField }) {
   const inp = (name, placeholder, type = "text", label) => (
     <div>
@@ -193,15 +194,27 @@ function ModeFields({ mode, fields, setField }) {
           {inp("wifiSsid", "ชื่อ WiFi (SSID)", "text", "ชื่อ WiFi")}
           <div>
             <label className={labelClass}>ประเภทความปลอดภัย</label>
-            <select
-              value={fields.wifiSecurity || "WPA"}
-              onChange={(e) => setField("wifiSecurity", e.target.value)}
-              className={inputClass}
-            >
-              <option value="WPA">WPA / WPA2</option>
-              <option value="WEP">WEP</option>
-              <option value="nopass">ไม่มีรหัสผ่าน (Open)</option>
-            </select>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { value: "WPA", label: "WPA2", emoji: "🔒" },
+                { value: "WEP", label: "WEP", emoji: "🔑" },
+                { value: "nopass", label: "Open", emoji: "🔓" },
+              ].map((o) => (
+                <button
+                  key={o.value}
+                  type="button"
+                  onClick={() => setField("wifiSecurity", o.value)}
+                  className={`py-2 rounded-full text-sm font-medium transition-colors flex items-center justify-center gap-1 ${
+                    (fields.wifiSecurity || "WPA") === o.value
+                      ? "bg-gradient-to-r from-pink-400 to-purple-400 dark:from-pink-500/60 dark:to-purple-500/60 text-white shadow-md"
+                      : "bg-surface-light dark:bg-surface-dark text-gray-700 dark:text-gray-300 border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                  }`}
+                >
+                  <span>{o.emoji}</span>
+                  <span>{o.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
           {(fields.wifiSecurity || "WPA") !== "nopass" &&
             inp("wifiPassword", "รหัสผ่าน WiFi", "text", "รหัสผ่าน")}
